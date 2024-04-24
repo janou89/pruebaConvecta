@@ -1,0 +1,42 @@
+﻿@model PropertyDetails
+@{
+    ViewData["Title"] = "Property";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="">
+    <div class="container">
+        <h1 class="text-center mt-5 mb-4">Detalle propiedad</h1>
+        <div class="text-center">
+            <a asp-action="Index" asp-controller="Home" class="btn btn-primary">Todas la prpiedades</a>
+        </div>
+        <br /><br />
+        <div class="cols-12">
+            <div class="card">
+                <div class="card-header">
+                    <b>@Model.propertyTitle</b>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><b>Ubicacion</b>: @Model.street</li>
+                    <li class="list-group-item"><b>Referencia</b>: @Model.webAddress</li>
+                    <li class="list-group-item"><b>Precio</b>: @Model.priceSaleFormatted</li>
+                    <li class="list-group-item"><b>Descripcion</b>: @Model.observations</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach ( var img in Model.propertyMedia)
+            {
+                if (img.type == "Image")
+                {
+                    <img src="@img.url" class="img-thumbnail" alt="...">
+                }else{
+                    <video class="img-thumbnail" controls>
+                        @img.url
+                    </video>                    
+                }                
+            }
+        </div>
+    </div>
+</div>
+

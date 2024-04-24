@@ -1,0 +1,101 @@
+﻿@model PropertySearch
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <div class="container">
+        <h1 class="text-center mt-5 mb-4">Venta de propiedades</h1>
+        <form class="row g-6" method="POST" asp-action="SearchProperty" asp-controller="Home">
+            <div class="col-auto">
+                <label for="inputPassword2" class="visually-hidden">Buscar propiedad</label>
+                <select class="form-select" aria-label="..." id="selectRegion" name="selectRegion">
+                    <option value="">Seleccione Region</option>
+                    @foreach (var option in @ViewBag.Regions)
+                    {
+                        <option value="@option.idRegion">@option.name</option>
+                    }
+                </select>
+
+            </div>
+            <div class="col-auto">
+                <label for="inputPassword1" class="visually-hidden">Buscar propiedad</label>
+                <select class="form-select" aria-label="..." asp-for="idBorough" id="idBorough" name="idBorough">
+                    <option value="">Seleccione Comuna</option>
+                    @foreach (var option in @ViewBag.Comuna)
+                    {
+                        if (option.idBorough != 0)
+                        {
+                            <option value="@option.idBorough" comuna="@option.idRegion">@option.name</option>
+                        }                        
+                    }
+                </select>
+
+            </div>
+            <div class="col-auto">
+                <label for="inputPassword2" class="visually-hidden">Buscar propiedad</label>
+                <select class="form-select" aria-label="..." asp-for="idType">
+                    <option value="">Tipo propiedad</option>
+                    @foreach (var option in @ViewBag.PropertyType)
+                    {
+                        <option value="@option.idPropertyType">@option.type</option>
+                    }
+                </select>
+
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+            <div class="col-auto float-sm-end">
+                <h6>Total propiedades: <span class="badge bg-primary">@ViewBag.Pagination.totalRecords</span></h6>
+            </div>
+            <div class="col-auto float-sm-end">
+                <h6>Mostrando: <span class="badge bg-success">@ViewBag.Property.Count</span></h6>
+            </div>
+        </form>       
+       
+        <br />
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var item in @ViewBag.Property)
+        {           
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="@item.firstImageUrl" class="card-img-top h-100" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">@item.propertyTitle</h5>
+                            <p class="card-text">@item.street</p>
+                            <a asp-action="Property" asp-controller="Home" asp-route-idProperty="@item.idProperty" class="btn btn-primary">Ver detalle</a>
+                        </div>
+                    </div>
+                </div>            
+        }            
+        </div>
+        <br />
+        <nav aria-label="...">
+            <ul class="pagination pagination-sm justify-content-center">
+                @for (int i = 1; i <= @ViewBag.Pagination.totalPages; i++)
+                {
+                    <li class="@(i == @ViewBag.CurrentPage  ? "active page-item" : "page-item")">
+                        <a href="@Url.Action("Index", new { pageNumber  = i })" class="page-link">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>
+<script>
+    document.getElementById("selectRegion").addEventListener('change', function () {
+        let regionSelected = this.value;
+
+        var opcionesComunas = document.getElementById("idBorough").getElementsByTagName("option");
+
+        for (var i = 0; i < opcionesComunas.length; i++) {
+            var opcion = opcionesComunas[i];
+            if (opcion.getAttribute('comuna') === regionSelected) {
+                opcion.style.display = ""; 
+            } else {
+                opcion.style.display = "none"; 
+            }
+        }
+    });
+</script>
